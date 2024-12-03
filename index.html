@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beni Seviyor Musun?</title>
+  <style>
+    /* Sayfa Stilleri */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #e75480; /* Arka plan rengi pembe */
+      text-align: center;
+    }
+
+    /* Başlık */
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 2rem; /* Telefonlar için uygun font boyutu */
+    }
+
+    /* Ekstra Metin */
+    #extra-text {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #dc3545;
+      display: none; /* Başlangıçta görünmez */
+      margin-bottom: 20px;
+    }
+
+    /* Buton Kutusu */
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* Genel Buton Stili */
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: white;
+      color: black;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    /* Tıklanamaz Hayır Butonu */
+    button.no.disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* Evet Butonu */
+    .yes {
+      border-color: #28a745;
+      background-color: #28a745;
+      color: white;
+    }
+
+    /* Hayır Butonu */
+    .no {
+      border-color: #dc3545;
+      background-color: #dc3545;
+      color: white;
+    }
+
+    /* Yeni Sayfa Stilleri */
+    .new-page {
+      background-color: #c2185b; /* Koyu pembe arka plan */
+      color: white;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .new-page h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .new-page p {
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Responsive Tasarım */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5rem; /* Mobilde başlık boyutunu küçült */
+      }
+
+      button {
+        font-size: 1rem; /* Buton fontunu küçült */
+        padding: 12px 18px;
+      }
+
+      .new-page h2 {
+        font-size: 1.5rem;
+      }
+
+      .new-page p {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 1.2rem; /* Daha küçük ekranlarda başlık boyutunu daha da küçült */
+      }
+
+      .new-page h2 {
+        font-size: 1.2rem;
+      }
+
+      .new-page p {
+        font-size: 0.8rem;
+      }
+
+      button {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Beni seviyor musun?</h1>
+  <div id="extra-text">beni sevmemekte bu kadar ısrarlısın yani?</div> <!-- Yeni metni -->
+  <div class="buttons">
+    <button class="yes">Evet</button>
+    <button class="no">Hayır</button>
+  </div>
+
+  <script>
+    // Evet ve Hayır butonlarını seç
+    const yesButton = document.querySelector(".yes");
+    const noButton = document.querySelector(".no");
+    const extraText = document.querySelector("#extra-text"); // Yeni metni seç
+
+    let clickCount = 0; // Hayır butonuna tıklama sayısı
+    let moveCount = 0;  // Hayır butonunun yer değiştirme sayısı
+    let lastPosition = { x: null, y: null }; // Son yer değiştirme pozisyonu
+
+    // Hayır butonuna tıklama işlevi ekle
+    noButton.addEventListener("click", () => {
+      clickCount++; // Tıklama sayısını artır
+
+      // Hayır butonunu küçült
+      const currentWidth = parseFloat(window.getComputedStyle(noButton).width);
+      const currentHeight = parseFloat(window.getComputedStyle(noButton).height);
+      const currentFontSize = parseFloat(window.getComputedStyle(noButton).fontSize);
+
+      // Boyutları küçült
+      if (currentWidth > 20 && currentHeight > 10) {
+        noButton.style.width = `${currentWidth - 5}px`;
+        noButton.style.height = `${currentHeight - 3}px`;
+        noButton.style.fontSize = `${Math.max(8, currentFontSize - 1)}px`;
+      }
+
+      if (clickCount >= 5 && moveCount < 10) { // 5. tıklamadan sonra hayır butonu ışınlanmaya başlasın
+        // Evet butonunun konumunu al
+        const yesRect = yesButton.getBoundingClientRect();
+        const yesCenterX = yesRect.left + yesRect.width / 2;
+        const yesCenterY = yesRect.top + yesRect.height / 2;
+
+        // Hayır butonunun 300px etrafına rastgele bir konum seç
+        const maxDistance = 300; // Evet butonundan 300px uzaklıkta olsun
+
+        // Rastgele bir yön seç ve bu mesafeye göre konum belirle
+        const randomAngle = Math.random() * 2 * Math.PI; // 0 ile 2π arasında rastgele bir açı
+        const randomX = yesCenterX + Math.cos(randomAngle) * maxDistance;
+        const randomY = yesCenterY + Math.sin(randomAngle) * maxDistance;
+
+        // Ekran sınırlarını aşmamaya dikkat et
+        const maxX = window.innerWidth - noButton.offsetWidth;
+        const maxY = window.innerHeight - noButton.offsetHeight;
+
+        // Yeni rastgele konum oluşturuluyor
+        const finalX = Math.min(maxX, Math.max(0, randomX));
+        const finalY = Math.min(maxY, Math.max(0, randomY));
+
+        // Hayır butonunu yeni rastgele konuma taşı
+        noButton.style.position = "absolute";
+        noButton.style.left = `${finalX}px`;
+        noButton.style.top = `${finalY}px`;
+
+        moveCount++; // Yer değiştirme sayısını artır
+
+        // 5 tıklama sonra metni göster
+        if (clickCount >= 5 && moveCount === 1) {
+          extraText.style.display = "block"; // Yeni metni göster
+        }
+
+        // 10 kere yer değiştirdiğinde hayır butonunu yok et
+        if (moveCount === 10) {
+          noButton.style.display = "none"; // Hayır butonu kaybolur
+          // "beni sevmemekte bu kadar ısrarlısın yani?" yazısını silip yerine yeni yazıyı ekle
+          extraText.innerText = "Son çaren, Seni seviyorumm";
+          extraText.style.color = "#28a745"; // Yeşil renkte olsun
+        }
+      }
+
+      // Evet butonunu büyüt
+      const yesCurrentWidth = parseFloat(window.getComputedStyle(yesButton).width);
+      const yesCurrentHeight = parseFloat(window.getComputedStyle(yesButton).height);
+
+      yesButton.style.width = `${yesCurrentWidth + 15}px`;  // Daha hızlı büyümesi için arttırdık
+      yesButton.style.height = `${yesCurrentHeight + 8}px`; // Daha hızlı büyümesi için arttırdık
+      yesButton.style.fontSize = `${Math.min(24, parseFloat(window.getComputedStyle(yesButton).fontSize) + 3)}px`; // Hızlı font büyümesi
+    });
+
+    // Evet butonuna tıklanırsa sayfa değişir
+    yesButton.addEventListener("click", () => {
+      document.body.innerHTML = `
+      <h2>Bende Seni Seviyorum</h2>
+          <p>
+            Kaç kere hayır'a tıkladın bilmiyom ama hiç tıklamadıysan söyliyim bassanda basamıyorsun zaten siteyi kapatmadıysan beni seviyosun demektir bende seni seviyorum sen bana kendi yeteneklerinle bi hediye yapınca bende kendi yeteneklerimle bişeyler yapiyim dedim biraz dandik oldu kabul ediyorum ama çok uğraştım şimdi resmi görünmesin diye nokta bile koymuyorum o yüzden nefessiz okuman gerek şimdi uzun uzun yazsam okumaya da üşenirsin heralde ama olsun 
+          </p>
+          <p>
+            Bazen beni sevmiyomuşsun gibi geliyo ama sevdiğini biliyorum bende seni çok seviyorum bazen soğuk yapıyosun bazen değişik davranıyosun bazen yoruyosun ama seni çok seviyorum belki bunu dedim diye trip atarsın yanlış düşünürsün bilmiyorum bazen bende hatalar yapıyorum garip davranıyorum ama seni çok seviyorum öyle de olacak sadece söylüyorum moralini bozmak gibi bi amacım yok sadece buraya yaziyim diyorum burda da boş yapıyorum onu da bil yani yazdıkça saçmalıyorum ama seni ne kadar sevdiğimi sana nasıl anlatacağımı bilemediğimden oluyo böyle
+           yazıyı hep devrik yazdım belki bu bi anda ne alaka dersin bilmiyorum bunları söylemek istiyorum sadece ama seni sevdiğimi sana nasıl anlatacağımı bilemiyorum kelimelerle anlatamıyotum maalesef benimde onu açıklayabileceğim kadar yeteneğim yok. </p>
+           <p>Seni çok seviyorum.</p>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html
